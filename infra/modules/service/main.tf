@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_group" "service" {
   retention_in_days = 7
 }
 
-resource "aws_task_definition" "service" {
+resource "aws_ecs_task_definition" "service" {
   family                   = var.name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -57,7 +57,7 @@ data "aws_region" "current" {}
 resource "aws_ecs_service" "service" {
   name                   = var.name
   cluster                = var.cluster_id
-  task_definition        = aws_task_definition.service.arn
+  task_definition        = aws_ecs_task_definition.service.arn
   desired_count          = var.desired_count
   launch_type            = "FARGATE"
   enable_execute_command = true
