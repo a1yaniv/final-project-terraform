@@ -43,7 +43,7 @@ resource "aws_iam_role" "github_actions" {
 }
 
 # Lab permissions: PowerUser covers ECS, ECR, ELB, RDS, ElastiCache, Secrets Manager, CloudWatch and S3.
-# PowerUser has no IAM, so IAM is granted separately and ONLY for roles that start with the prefix.
+# PowerUser has no IAM, so IAM is granted separately and ONLY for roles and policies that start with the prefix.
 resource "aws_iam_role_policy_attachment" "power_user" {
   role       = aws_iam_role.github_actions.name
   policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
@@ -57,9 +57,12 @@ resource "aws_iam_role_policy" "iam_for_app_roles" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = "iam:*"
-        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.name_prefix}-*"
+        Effect = "Allow"
+        Action = "iam:*"
+        Resource = [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.name_prefix}-*",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.name_prefix}-*"
+        ]
       },
       {
         # the first ElastiCache / ECS / RDS / ELB in an account creates a "service-linked role"
