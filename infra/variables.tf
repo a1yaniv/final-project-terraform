@@ -51,4 +51,4 @@ variable "option_b" {
   type        = string
   default     = "אייזנקוט"
   description = "Second voting option"
-}# PR plan check
+} # PR plan check
